@@ -2,7 +2,9 @@
 #+begin_quote
 Post Morten Note: I've learned a lot in my Org journey (which included writing this library suite), but I have stopped using Org for anything other than tangling the Emacs config. Honestly, it's a quite messy language once you dig into its idiosyncrasies, its faults and its details. And it was not exactly planned to be used in the outside world. 
 
-I've come to appreciate simpler and more standardized languages, and if I were to recommend something it would be [[https://commonmark.org/][CommonMark]] with all the relevant [[https://github.com/jgm/commonmark-hs/tree/master/commonmark-extensions][extensions]] enabled.
+I've come to appreciate simpler and more standardized languages, and if I were to recommend something it would be [[https://commonmark.org/][CommonMark]] with all the relevant [[https://github.com/jgm/commonmark-hs/tree/master/commonmark-extensions][extensions]] enabled. 
+
+I still want to build on what I've learned here and write a recursion-scheme-styled AST for CommonMark, along with an Ondim exporter for it. And a "visualizer" for notes like my other stalled project, Organon. 
 #+end_quote
 
 * org-mode-hs
