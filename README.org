@@ -1,6 +1,3 @@
-#+title: org-mode-hs
-
-This repository provides a parser and exporters for Org Mode documents. The Org document is parsed into an AST similar to =org-element='s, and the exporters are highly configurable using HTML, Markdown or LaTeX templates.
 
 #+begin_quote
 Post Morten Note: I've learned a lot in my Org journey (which included writing this parser), but I have stopped using Org for anything other than tangling the Emacs config. Honestly, it's a quite messy language once you dig into its idiosyncrasies, its faults and its details. And it was not exactly planned to be used in the outside world. 
@@ -8,8 +5,13 @@ Post Morten Note: I've learned a lot in my Org journey (which included writing t
 I've come to appreciate simpler and more standardized languages, and if I were to recommend something it would be [[https://commonmark.org/][CommonMark]] with all the [[https://github.com/jgm/commonmark-hs/tree/master/commonmark-extensions][extensions]] enabled.
 #+end_quote
 
+* org-mode-hs
 
-* Table of contents :TOC:
+This repository provides a parser and exporters for Org Mode documents. The Org document is parsed into an AST similar to =org-element='s, and the exporters are highly configurable using HTML, Markdown or LaTeX templates.
+
+
+
+** Table of contents :TOC:
 - [[#org-cli-horg][org-cli (horg)]]
   - [[#usage][Usage]]
   - [[#installation-from-source][Installation from source]]
@@ -21,11 +23,11 @@ I've come to appreciate simpler and more standardized languages, and if I were t
 - [[#org-exporters-library][org-exporters library]]
   - [[#defining-a-new-export-backend][Defining a new export backend]]
 
-* org-cli (horg)
+** org-cli (horg)
 
 You can find compiled binaries for Linux and MacOS on the [[https://github.com/lucasvreis/org-mode-hs/releases][releases page]].
 
-** Usage
+*** Usage
 The =horg= CLI tool has some basic help pages, to see them type:
 #+begin_src bash
 # Global help
@@ -43,7 +45,7 @@ horg export html -i myfile.org -o out.html
 horg export html -i myfile.org --stdout
 #+end_src
 
-*** Using Pandoc
+**** Using Pandoc
 The Pandoc exporter does not output Pandoc formats directly, but rather, it generates a JSON AST that can be fed into Pandoc. You can pipe this JSON into Pandoc to convert to Markdown or any other supported format:
 
 #+begin_src bash
@@ -52,8 +54,8 @@ horg export pandoc -i myfile.org --stdout | pandoc --from json --to markdown
 
 It can happen that the JSON API version is incompatible with your installed version of Pandoc. The CI compiles =horg= with the latest Pandoc API available at the build time, so using the latest released version of the Pandoc binary has a good chance of fixing the problem.
 
-** Installation from source
-*** Using =cabal=
+*** Installation from source
+**** Using =cabal=
 #+begin_src bash
 git clone https://github.com/lucasvreis/org-mode-hs.git
 cd org-mode-hs
@@ -62,14 +64,14 @@ cabal install horg
 
 Please note that this library and some of its dependencies are not on Hackage yet, so you need to clone this repository first. 
 
-** Customizing templates
+*** Customizing templates
 You can use the =horg init-templates= command to populate a =.horg= directory in the current directory with the default templates, which you can then modify.
 
 Detailed documentation on how the templates work is TODO.
 
-* org-parser library
-** How to test and play with it
-*** Testing the parser in =ghci=
+** org-parser library
+*** How to test and play with it
+**** Testing the parser in =ghci=
 
 This assumes you have =cabal= installed.
 
@@ -85,10 +87,10 @@ You can write the contents to be parsed between =[text|= and =|]=. More generall
 
 Where =[parser to parse]= can be basically any of the functions from =Org.Parse.Document=, =Org.Parser.Elements= or =Org.Parser.Objects= whose types are wrapped by the =OrgParser= or =Marked OrgParser= monads. You don't need to import those modules yourself as they are already imported in the ~test~ namespace.
 
-*** Unit tests
+**** Unit tests
 You can view the unit tests under [[org-parser/test][org-parser/test]]. They aim to touch as much corner cases as possible against org-element, so you can take a look there to see what already works, and how well it works.
 
-** Progress
+*** Progress
 In the spec terms (see below the table for other features), the following components are implemented:
 | Component           | Type              | Parse |
 |---------------------+-------------------+-------|
@@ -148,7 +150,7 @@ In the spec terms (see below the table for other features), the following compon
 | Markup              | X                 | X     |
 (Thanks @tecosaur for the table)
 
-*** Going beyond what is listed in the spec
+**** Going beyond what is listed in the spec
 
 ~org-element-parse-buffer~ does not parse /everything/ that will eventually be parsed or processed when exporting a document written in Org-mode. Examples of Org features that are not handled by the parser alone (so aren't described in the spec) include content from keywords like =#+title:=, that are parsed "later" by the exporter itself, references in lines of =src= or =example= blocks and link resolving, that are done in a post-processing step, and the use of =#+include:= keywords, =TODO= keywords and radio links, that are done in a pre-processing step.
 
@@ -164,7 +166,7 @@ Since the aspects listed above are genuine /org-mode features/, and not optional
 | Per-file TODO keywords                     | not yet (on the way, some work is done)                                            |
 | Macro definitions and substitution         | not yet (on the way, some work is done)                                            |
 
-** Comparasion to Pandoc
+*** Comparasion to Pandoc
 The main difference between =org-parser= and the Pandoc Org Reader is that this one parses into an AST is more similar to the org-element's AST, while Pandoc's parses into the =Pandoc= AST, which cannot express all Org elements directly. This has the effect that some Org features are either unsupported by the reader or "projected" onto =Pandoc= in ways that bundle less information about the Org source. In contrast, this parser aims to represent Org documents more faithfully before "projecting" them into formats like HTML or the Pandoc AST itself. So you can expect more org-specific features to be parsed, and a hopefully more accurate parsing in general.
 
 Also, if you are developer mainly interested in rendering Org documents to HTML, Pandoc is a very big library to depend upon, with very long build times (at least in my computer, sadly).
@@ -181,10 +183,10 @@ This single paragraph is broken into three by Pandoc, because it looks for a new
 
 Another noteworthy difference is that =haskell-org-parser= uses a different parsing library, ~megaparsec~. Pandoc uses the older ~parsec~, but also bundles many features on its own library.
 
-* org-exporters library
+** org-exporters library
 This library provides functions for post-processing of the Org AST and exporting to various formats with =ondim=.
 
-** Defining a new export backend
+*** Defining a new export backend
 Basically:
  - Use the [[https://github.com/lucasvreis/ondim][~ondim~ library]] to create a Ondim template system for the desired format, if it does not already exist.
  - Import ~Org.Exporters.Common~ and create an ~ExportBackend~ for your format.
